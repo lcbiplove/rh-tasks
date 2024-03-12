@@ -1,0 +1,6 @@
+Name,Birthdate,Score,Grade,Pass,Price,Joined,Expired
+Alice,1/01/1990,70,A, true,99.98, 1922-01-11,1 day
+Bob,2/02/1991,70,B, false,77, 1922-01-12,2 days
+Charlie,3/03/1992,70,A,FALSE,77, 1922-01-13,3 days
+David,4/04/1993,70,B,-,a, 1922-01-14,4 days
+Eve,5/05/1994,70,A,TRUE,22.23, 1922-01-15,Not None
