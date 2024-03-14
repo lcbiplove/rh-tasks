@@ -1,3 +1,4 @@
 from django.contrib import admin
+from data_type_infer.models import CsvFileInfer
 
-# Register your models here.
+admin.site.register(CsvFileInfer)
