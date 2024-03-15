@@ -1,7 +1,7 @@
 
 from datetime import datetime
 
-def get_error_response(code: int, messsage: str, path: str):
+def get_error_response(code: int, messsage: dict, path: str):
     return {
         "status": "error", 
         "statusCode": code,

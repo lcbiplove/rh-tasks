@@ -1,3 +1,5 @@
+import logging
+
 from django.forms import ValidationError
 from django.http import HttpResponse, JsonResponse
 from django.views import View
@@ -5,7 +7,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from rhombus import utils
 from .models import CsvFileInfer
+from .infer_data_types import InferDataType
 
+logger = logging.getLogger('django')
 
 # This is the view that will be called when the user sends a POST request to the /csv/ endpoint.
 # The @method_decorator is used to disable CSRF protection for this view as it is a public api endpoint.
@@ -18,20 +22,23 @@ class CsvTypeInferView(View):
         data = {}
         file = request.FILES.get('file')
 
-        if file is None:
-            data = utils.get_error_response(code=400, messsage='No file provided', path=request.path)
-            return JsonResponse(data=data, status=400)
-        
-        model = CsvFileInfer(file=file)
+        obj = CsvFileInfer(file=file)
         try:
-            model.full_clean()
-            model.save()
+            obj.title = request.POST.get('title')
+            obj.full_clean()
+            obj.save()
+            infObj = InferDataType(obj.file.path)
+            columns = infObj.infer()
+            print(columns)
+            logger.info("Inferred columns: %s", columns)
+
             data = utils.get_success_response(data={
-                "columns": model.columns,
+                "columns": columns,
             })
-            
         except ValidationError as e:
-            print(e.messages)
-            return JsonResponse(data=utils.get_error_response(code=400, messsage=str(e.error_dict), path=request.path), status=400)
+            return JsonResponse(data=utils.get_error_response(code=400, messsage=e.message_dict, path=request.path), status=400)
+        except Exception as e:
+            logger.error("Error occured while saving csv file infer model: %s", e)
+            return JsonResponse(data=utils.get_error_response(code=500, messsage={'global': 'Oops internal error occured.'}), path=request.path, status=500)
         
         return JsonResponse(data)
