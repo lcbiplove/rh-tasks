@@ -31,13 +31,6 @@ const data = {
   ],
 };
 
-const popupContainer = (
-  <div>
-    <div>This is me</div>
-    <div>This is me</div>
-  </div>
-);
-
 const index = () => {
   const [isModal, setShowModal] = useState(false);
 
