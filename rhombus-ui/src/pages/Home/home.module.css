@@ -1,0 +1,14 @@
+.container {
+  height: 100vh;
+}
+
+.innerContainer {
+  padding: 2rem;
+}
+
+.btnsWrap {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
