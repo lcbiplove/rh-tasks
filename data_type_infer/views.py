@@ -22,16 +22,14 @@ class CsvTypeInferView(View):
         data = {}
         file = request.FILES.get('file')
 
-        obj = CsvFileInfer(file=file)
+        obj = CsvFileInfer(file=file, title=request.POST.get('title'))
         try:
-            obj.title = request.POST.get('title')
             obj.full_clean()
             obj.save()
             infObj = InferDataType(obj.file.path)
             columns = infObj.infer()
             print(columns)
             logger.info("Inferred columns: %s", columns)
-
             data = utils.get_success_response(data={
                 "columns": columns,
             })
@@ -39,6 +37,6 @@ class CsvTypeInferView(View):
             return JsonResponse(data=utils.get_error_response(code=400, messsage=e.message_dict, path=request.path), status=400)
         except Exception as e:
             logger.error("Error occured while saving csv file infer model: %s", e)
-            return JsonResponse(data=utils.get_error_response(code=500, messsage={'global': 'Oops internal error occured.'}), path=request.path, status=500)
+            return JsonResponse(data=utils.get_error_response(code=500, messsage={'global': 'Oops internal error occured.'}, path=request.path), status=500)
         
         return JsonResponse(data)
