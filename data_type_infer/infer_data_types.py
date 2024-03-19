@@ -33,7 +33,7 @@ class InferDataType:
             self.df[column] = pd.to_datetime(self.df[column])
         elif type == 'category':
             self.df[column] = pd.Categorical(self.df[column])
-        elif type == 'string':
+        elif type == 'text':
             self.df[column] = self.df[column].astype(str)
         else:
             raise ValueError('Invalid type')

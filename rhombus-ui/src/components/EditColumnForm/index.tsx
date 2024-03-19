@@ -2,17 +2,20 @@ import { FormEvent, useState } from "react";
 import client from "@/api";
 import styles from "./editColumnForm.module.css";
 import { Loader } from "@/components";
-import {AvailableDataTypes} from "@/utils";
+import { AvailableDataTypes } from "@/utils";
 import { InferResponseCallback } from "@/types";
 
 type PropTypes = {
   id: number;
   title: string;
   columns: string[];
+  dataCallBack: (response: InferResponseCallback) => void;
 };
 
 const index = (props: PropTypes) => {
   const [loading, setLoading] = useState(false);
+  const [columnName, setColumnName] = useState(props.columns[0]);
+  const [columnType, setColumnType] = useState(AvailableDataTypes[0]);
 
   const handleSubmission = async (e: FormEvent<HTMLFormElement>) => {
     const callbackData = {
@@ -22,6 +25,8 @@ const index = (props: PropTypes) => {
         data: {
           columns: {},
           rows: {},
+          title: "",
+          id: 0,
         },
       },
     };
@@ -29,13 +34,18 @@ const index = (props: PropTypes) => {
     e.preventDefault();
     try {
       const data = new FormData();
+      data.append("column", columnName);
+      data.append("type", columnType);
       setLoading(true);
-      let response = await client.post("/type-infer/csv/", data);
-      callbackData.data = response.data;
-      //   props.dataCallBack(callbackData);
+      let response = await client.post(
+        `/type-infer/csv/${props.id}/edit`,
+        data
+      );
+      callbackData.data.data = response.data;
+      props.dataCallBack(callbackData);
     } catch (error: any) {
       callbackData.error = error.response.data.error.message;
-      //   props.dataCallBack(callbackData);
+        props.dataCallBack(callbackData);
     } finally {
       setLoading(false);
     }
@@ -55,7 +65,7 @@ const index = (props: PropTypes) => {
             className={`${styles.input} ${styles.disabled}`}
             type="text"
             id="title"
-            value={props.title}
+            placeholder={props.title}
           />
         </div>
         <div className={styles.twoRowGroup}>
@@ -63,9 +73,19 @@ const index = (props: PropTypes) => {
             <label className={styles.label} htmlFor="columnName">
               Column Name
             </label>
-            <select className={styles.select} name="columnName" id="columnName">
+            <select
+              onChange={(e) => setColumnName(e.target.value)}
+              className={styles.select}
+              name="columnName"
+              id="columnName"
+              value={columnName}
+            >
               {props.columns.map((column, _) => {
-                return <option value={column}>{column}</option>;
+                return (
+                  <option key={column} value={column}>
+                    {column}
+                  </option>
+                );
               })}
             </select>
           </div>
@@ -73,9 +93,19 @@ const index = (props: PropTypes) => {
             <label className={styles.label} htmlFor="columnType">
               Column Type
             </label>
-            <select className={styles.select} name="columnType" id="columnType">
+            <select
+              onChange={(e) => setColumnType(e.target.value)}
+              className={styles.select}
+              name="columnType"
+              id="columnType"
+              value={columnType}
+            >
               {AvailableDataTypes.map((type, _) => {
-                return <option value={type}>{type}</option>;
+                return (
+                  <option key={type} value={type}>
+                    {type}
+                  </option>
+                );
               })}
             </select>
           </div>

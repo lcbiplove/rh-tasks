@@ -56,7 +56,7 @@ class CsvColumnEdit(View):
         if column not in obj.columns:
             return JsonResponse(data=utils.get_error_response(code=400, messsage={'column': 'Column does not exist.'}, path=request.path), status=400)
         
-        if type not in ['string', 'number', 'date', 'category']:
+        if type not in ['text', 'number', 'date', 'category']:
             return JsonResponse(data=utils.get_error_response(code=400, messsage={'type': 'Invalid type.'}, path=request.path), status=400)
         
         infObj = InferDataType(obj.file.path)

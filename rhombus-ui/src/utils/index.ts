@@ -16,7 +16,6 @@ const GetUserFriendlyTypes = (dataType: string) => {
         "category": "category",
         "object": "text",
     }
-    console.log(dataType);
     return mapVal[dataType] || dataType;
 };
 

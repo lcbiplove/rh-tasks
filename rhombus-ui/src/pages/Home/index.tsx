@@ -8,6 +8,20 @@ import {
 } from "@/types";
 
 const index = () => {
+  const handleEditColumn = (response: InferResponseCallback) => {
+    if (!response.error) {
+      setShowModal({ showModal: false, component: null });
+      setNewData(response.data.data);
+    }
+  };
+
+  const handleAddFile = (response: InferResponseCallback) => {
+    if (!response.error) {
+      setShowModal({ showModal: false, component: null });
+      setNewData(response.data.data);
+    }
+  };
+
   const [modal, setShowModal] = useState<ModalData>({
     showModal: false,
     component: null,
@@ -19,13 +33,6 @@ const index = () => {
     title: "",
     id: 0,
   });
-
-  const handleAddFile = (response: InferResponseCallback) => {
-    if (!response.error) {
-      setShowModal({ showModal: false, component: null });
-      setNewData(response.data.data);
-    }
-  };
 
   return (
     <div className={styles.container}>
@@ -55,6 +62,7 @@ const index = () => {
                       id={newData.id}
                       title={newData.title}
                       columns={Object.keys(newData.columns)}
+                      dataCallBack={handleEditColumn}
                     />
                   ),
                 });
