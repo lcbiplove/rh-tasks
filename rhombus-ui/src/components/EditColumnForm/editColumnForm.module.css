@@ -1,0 +1,52 @@
+.container {
+    padding: 1rem;
+    width: 100%;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    width: 100%;
+}
+
+.twoRowGroup {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+.label {
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: var(--dark);
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.input {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1rem;
+    border: 1px solid var(--primary);
+}
+
+.input.disabled {
+    pointer-events: none;
+    cursor: not-allowed;
+    background-color: #eee;
+    border: none;
+}
+
+.select {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1rem;
+}
+
+.error {
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+    color: var(--error);
+    position: absolute;
+}

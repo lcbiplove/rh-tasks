@@ -1,5 +1,8 @@
 import { CsvInferResponseData } from "@/types";
+import { GetUserFriendlyTypes } from "@/utils";
+
 import styles from "./table.module.css";
+
 
 type Props = {
   data: CsvInferResponseData;
@@ -18,7 +21,7 @@ const index = (props: Props) => {
           {columnKeys.map((key: string, _) => {
             return (
               <th className={styles.th} key={key}>
-                {key} ({columns[key]})
+                {key} ({GetUserFriendlyTypes(columns[key])})
               </th>
             );
           })}

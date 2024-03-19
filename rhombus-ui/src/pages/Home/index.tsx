@@ -1,10 +1,17 @@
 import { useState } from "react";
-import { Modal, Table, Form } from "@/components";
+import { Modal, Table, Form, EditColumnForm } from "@/components";
 import styles from "./home.module.css";
-import { InferResponseCallback, CsvInferResponseData, ModalData } from "@/types";
+import {
+  InferResponseCallback,
+  CsvInferResponseData,
+  ModalData,
+} from "@/types";
 
 const index = () => {
-  const [modal, setShowModal] = useState<ModalData>({showModal: false, component: null});
+  const [modal, setShowModal] = useState<ModalData>({
+    showModal: false,
+    component: null,
+  });
   // This will launch only if propName value has chaged.
   const [newData, setNewData] = useState<CsvInferResponseData>({
     rows: {},
@@ -15,7 +22,7 @@ const index = () => {
 
   const handleAddFile = (response: InferResponseCallback) => {
     if (!response.error) {
-      setShowModal({showModal: false, component: null});
+      setShowModal({ showModal: false, component: null });
       setNewData(response.data.data);
     }
   };
@@ -30,11 +37,32 @@ const index = () => {
         <div className={styles.btnsWrap}>
           <button
             onClick={() => {
-              setShowModal({showModal: true, component: <Form dataCallBack={handleAddFile} />});
+              setShowModal({
+                showModal: true,
+                component: <Form dataCallBack={handleAddFile} />,
+              });
             }}
           >
             Add Files
           </button>
+          {newData.id != 0 && (
+            <button
+              onClick={() => {
+                setShowModal({
+                  showModal: true,
+                  component: (
+                    <EditColumnForm
+                      id={newData.id}
+                      title={newData.title}
+                      columns={Object.keys(newData.columns)}
+                    />
+                  ),
+                });
+              }}
+            >
+              Edit Columns
+            </button>
+          )}
         </div>
         {newData.title && <h2 className={styles.title}>{newData.title}</h2>}
         {newData.columns && <Table data={newData} />}

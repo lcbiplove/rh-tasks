@@ -11,7 +11,7 @@ type PropTypes = {
 interface FormError {
   title?: string;
   file?: string;
-} // Add a semicolon at the end of the line
+}
 
 const index = (props: PropTypes) => {
   const [error, setError] = useState<FormError>({}); // This is an object with two optional properties [title, file
@@ -27,6 +27,8 @@ const index = (props: PropTypes) => {
         data: {
           columns: {},
           rows: {},
+          title: "",
+          id: 0,
         }
       },
     };
