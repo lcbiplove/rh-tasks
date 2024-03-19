@@ -15,9 +15,6 @@ logger = logging.getLogger('django')
 # The @method_decorator is used to disable CSRF protection for this view as it is a public api endpoint.
 @method_decorator(csrf_exempt, name='dispatch')
 class CsvTypeInferView(View):
-    def get(self, request):
-        return HttpResponse('Hello, World!')
-    
     def post(self, request):
         data = {}
         file = request.FILES.get('file')
@@ -44,3 +41,33 @@ class CsvTypeInferView(View):
             return JsonResponse(data=utils.get_error_response(code=500, messsage={'global': 'Oops internal error occured.'}, path=request.path), status=500)
         
         return JsonResponse(data)
+
+@method_decorator(csrf_exempt, name='dispatch')
+class CsvColumnEdit(View):
+    def post(self, request, pk):
+        print(pk)
+        column = request.POST.get('column')
+        type = request.POST.get('type')
+
+        obj = CsvFileInfer.objects.get(id=pk)
+        if not obj:
+            return JsonResponse(data=utils.get_error_response(code=404, messsage={'global': 'Object does not found.'}, path=request.path), status=404)
+        
+        if column not in obj.columns:
+            return JsonResponse(data=utils.get_error_response(code=400, messsage={'column': 'Column does not exist.'}, path=request.path), status=400)
+        
+        if type not in ['string', 'number', 'date', 'category']:
+            return JsonResponse(data=utils.get_error_response(code=400, messsage={'type': 'Invalid type.'}, path=request.path), status=400)
+        
+        infObj = InferDataType(obj.file.path)
+        infObj.manual_infer(column, type)
+        columns, rows = infObj.columns, infObj.rows
+        obj.columns, obj.rows = columns, rows
+        obj.save()
+
+        return JsonResponse(data={
+            "id": obj.id,
+            "title": obj.title,
+            "columns": obj.columns,
+            "rows": obj.rows,
+        })

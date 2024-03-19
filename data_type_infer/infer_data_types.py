@@ -26,13 +26,23 @@ class InferDataType:
             if len(self.df[col].unique()) / len(self.df[col]) < threshold:
                 self.df[col] = pd.Categorical(self.df[col])
 
+    def manual_infer(self, column, type):
+        if type == 'number':
+            self.df[column] = pd.to_numeric(self.df[column], errors='coerce')
+        elif type == 'date':
+            self.df[column] = pd.to_datetime(self.df[column])
+        elif type == 'category':
+            self.df[column] = pd.Categorical(self.df[column])
+        elif type == 'string':
+            self.df[column] = self.df[column].astype(str)
+        else:
+            raise ValueError('Invalid type')
+
     @property
     def columns(self):
-        print(self.df.dtypes.astype(str).to_dict())
         return self.df.dtypes.astype(str).to_dict()
     
     @property
     def rows(self):
-        print(self.df.astype(str).to_dict())
         return self.df.astype(str).to_dict()    
 
