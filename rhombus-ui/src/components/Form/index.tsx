@@ -2,19 +2,35 @@ import { ChangeEvent, FormEvent, useState } from "react";
 import client from "@/api";
 import styles from "./form.module.css";
 import { Loader } from "@/components";
+import { InferResponseCallback } from "@/types";
+
+type PropTypes = {
+  dataCallBack: (params: InferResponseCallback) => void;
+};
 
 interface FormError {
   title?: string;
   file?: string;
-}
+} // Add a semicolon at the end of the line
 
-const index = () => {
+const index = (props: PropTypes) => {
   const [error, setError] = useState<FormError>({}); // This is an object with two optional properties [title, file
   const [title, setTitle] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
 
   const handleSubmission = async (e: FormEvent<HTMLFormElement>) => {
+    const callbackData = {
+      error: false,
+      data: {
+        status: "",
+        data: {
+          columns: {},
+          rows: {},
+        }
+      },
+    };
+
     e.preventDefault();
     try {
       const data = new FormData();
@@ -22,10 +38,13 @@ const index = () => {
       data.append("file", file || ""); // Provide a default value for file when it is null
       setLoading(true);
       let response = await client.post("/type-infer/csv/", data);
-      console.log(response.data);
+      callbackData.data = response.data;
+      props.dataCallBack(callbackData);
     } catch (error: any) {
       const message = error.response.data.error.message;
       setError(message);
+      callbackData.error = error.response.data.error.message;
+      props.dataCallBack(callbackData);
     } finally {
       setLoading(false);
     }
@@ -52,6 +71,7 @@ const index = () => {
             className={styles.input}
             type="text"
             id="title"
+            value={title}
           />
           {error.title && <div className={styles.error}>{error.title}</div>}
         </div>

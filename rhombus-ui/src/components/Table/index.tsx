@@ -1,31 +1,39 @@
+import { CsvInferResponseData } from "@/types";
 import styles from "./table.module.css";
 
 type Props = {
-  data: any;
+  data: CsvInferResponseData;
 };
 
 const index = (props: Props) => {
+  const { columns, rows } = props.data;
+  const columnKeys = Object.keys(columns);
+  const rowKeys = Object.keys(rows);
+  const elements = Object.keys(rows[rowKeys[0]] || {});
+
   return (
     <table className={styles.table}>
       <thead>
         <tr>
-          {props.data.columns.map((value: any, index: number) => (
-            <th className={styles.th} key={index}>
-              {value.name} ({value.type})
-            </th>
-          ))}
+          {columnKeys.map((key: string, _) => {
+            return (
+              <th className={styles.th} key={key}>
+                {key} ({columns[key]})
+              </th>
+            );
+          })}
         </tr>
       </thead>
       <tbody>
-        {props.data.rows.map((row: any, index: number) => (
-          <tr key={index}>
-            {Object.values(row).map((value: any, index: number) => (
-              <td className={styles.td} key={index}>
-                {value}
-              </td>
-            ))}
-          </tr>
-        ))}
+        {elements.map((_, rowIndex: number) => {
+          return (
+            <tr key={rowIndex}>
+              {columnKeys.map((column: string, index: number) => {
+                return <td className={styles.td} key={`${rowIndex} ${index}`}>{rows[column][`${rowIndex}`]}</td>;
+              })}
+            </tr>
+          );
+        })}
       </tbody>
     </table>
   );
