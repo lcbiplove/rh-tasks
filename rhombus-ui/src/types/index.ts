@@ -1,6 +1,8 @@
 interface CsvInferResponseData {
     columns: Record<string, string>;
     rows: Record<string, Record<string, any>>;
+    title: string;
+    id: number;
 }
 
 interface BaseResponse {
@@ -13,5 +15,9 @@ interface InferResponseCallback {
     data: BaseResponse;
 }
 
+interface ModalData {
+    showModal: boolean;
+    component: React.ReactNode;
+}
 
-export type { CsvInferResponseData, BaseResponse, InferResponseCallback };
+export type { CsvInferResponseData, BaseResponse, InferResponseCallback, ModalData };

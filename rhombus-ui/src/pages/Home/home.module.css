@@ -8,7 +8,11 @@
 
 .btnsWrap {
   display: flex;
-  justify-content: space-between;
   margin-bottom: 1rem;
   gap: 1rem;
+}
+
+.title {
+  margin: 2rem 0;
+  color: var(--primary);
 }
