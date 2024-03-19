@@ -21,17 +21,21 @@ class CsvTypeInferView(View):
     def post(self, request):
         data = {}
         file = request.FILES.get('file')
-
         obj = CsvFileInfer(file=file, title=request.POST.get('title'))
         try:
             obj.full_clean()
             obj.save()
             infObj = InferDataType(obj.file.path)
-            columns = infObj.infer()
-            print(columns)
+            columns, rows = infObj.columns, infObj.rows
+            obj.columns, obj.rows = columns, rows
+            obj.save()
+            
             logger.info("Inferred columns: %s", columns)
             data = utils.get_success_response(data={
-                "columns": columns,
+                "id": obj.id,
+                "title": obj.title,
+                "columns": obj.columns,
+                "rows": obj.rows,
             })
         except ValidationError as e:
             return JsonResponse(data=utils.get_error_response(code=400, messsage=e.message_dict, path=request.path), status=400)
