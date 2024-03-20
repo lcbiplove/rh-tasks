@@ -24,6 +24,9 @@ To run this project locally, follow these steps:
     python3 -m venv .venv # virutal environment preferred
     pip install -r requirements.txt
     mkdir logs # for log outputs
+    python manage.py migrate
+    python manage.py createsuperuser  --user admin --email admin@admin.com # For admin portal
+    python manage.py runserver
     ```
 
 3. Install the required dependencies for the React frontend. Navigate to the `rhombus-ui` directory and run:
@@ -54,3 +57,10 @@ All the basic requirements of the task is completed.
 - Django Integration: Seamless integration of Django project with Python data processing script.
 - React Frontend: Developed frontend application using React for smooth user interaction.
 - User-friendly Interface: Intuitive interface for easy data uploading, processing, and viewing.
+
+## Further improvement
+
+The project has covered overall requirements but few things can be included in the version second version of the project:
+
+- Use of docker to manage container in both frontend and backend (*Note: It is okay for now, but is a must when project gets complicated)
+- Test cases for both ends
